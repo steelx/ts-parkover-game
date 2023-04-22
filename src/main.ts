@@ -1,7 +1,7 @@
 import Game from './Game'
 import './style.css'
-import * as CANNON from 'cannon'
+import Havok from "@babylonjs/havok"
 
-window.CANNON = CANNON
+globalThis.HK = await Havok();
 
 new Game(document.querySelector<HTMLCanvasElement>('#render')!)

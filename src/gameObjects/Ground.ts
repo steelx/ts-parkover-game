@@ -1,20 +1,22 @@
 // src/gameObjects/Ground.ts
-import { Color3, PhysicsImpostor, StandardMaterial, Vector3, VertexData } from "@babylonjs/core";
+import { Color3, PhysicsAggregate, PhysicsShapeType, StandardMaterial, Vector3, VertexData } from "@babylonjs/core";
 import Game from "../Game";
 import { createUnevenGround } from "../meshes/unevenGround";
 import GameObject from "./GameObject"
 
 export default class Ground extends GameObject {
+    aggregate: PhysicsAggregate;
     constructor(name: string, game: Game) {
         super(name, game)
 
-        const vertexData = createUnevenGround(20, 20, 10);
+        const vertexData = createUnevenGround(30, 30, 10);
         vertexData.applyToMesh(this)
         this.flipFaces(true)
         this.position = Vector3.Zero();
 
-        const heightmapData = this.getHeightmapData(vertexData);
-        this.physicsImpostor = new PhysicsImpostor(this, PhysicsImpostor.HeightmapImpostor, { mass: 0, restitution: 0.9, heightmapData, friction: 1 }, game.scene);
+        // const heightmapData = this.getHeightmapData(vertexData);
+        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.MESH, { mass: 0, restitution: 0.01, friction: 1 }, game.scene);
+        // this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.BOX, { mass: 0 }, game.scene);
 
         const groundMaterial = new StandardMaterial("groundMaterial", game.scene);
         groundMaterial.diffuseColor = Color3.Green();

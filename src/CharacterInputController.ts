@@ -30,8 +30,8 @@ export default class CharacterInputController {
             }
 
             if (this.inputMap[STOP_FORCE_KEY]) { // key to stop movement
-                this.character.physicsImpostor?.setLinearVelocity(Vector3.Zero());
-                this.character.physicsImpostor?.setAngularVelocity(Vector3.Zero());
+                this.character.aggregate.body.setLinearVelocity(Vector3.Zero());
+                this.character.aggregate.body.setAngularVelocity(Vector3.Zero());
             }
         });
 
@@ -81,8 +81,8 @@ export default class CharacterInputController {
     }
 
     private applyForce(force: Vector3) {
-        if (this.character.physicsImpostor) {
-            this.character.physicsImpostor.applyImpulse(force, this.character.getAbsolutePosition());
+        if (this.character.aggregate) {
+            this.character.aggregate.body.applyImpulse(force, this.character.getAbsolutePosition());
             this.character.moveDirection.addInPlace(force);
             this.forceApplied = true;
         }
