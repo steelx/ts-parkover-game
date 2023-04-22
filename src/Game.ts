@@ -1,6 +1,5 @@
-import { ArcRotateCamera, CannonJSPlugin, Color3, DirectionalLight, Engine, HemisphericLight, Scene, ShadowGenerator, Vector3 } from "@babylonjs/core";
+import { ArcFollowCamera, CannonJSPlugin, Color3, DirectionalLight, Engine, HemisphericLight, Quaternion, Scene, ShadowGenerator, Vector3 } from "@babylonjs/core";
 import Player from "./gameObjects/Player";
-import GameObject from "./gameObjects/GameObject";
 
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
@@ -11,7 +10,7 @@ import CharacterInputController from "./CharacterInputController";
 export default class Game {
     engine: Engine
     scene: Scene
-    player: GameObject | null = null
+    player: Player | null = null
     static shadowGenerator: ShadowGenerator;
 
     constructor(private canvas: HTMLCanvasElement) {
@@ -32,16 +31,11 @@ export default class Game {
     public static createScene(engine: Engine): Scene {
         const scene = new Scene(engine);
 
-        const camera = new ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, 10, Vector3.Zero(), scene);
-        camera.attachControl(engine.getRenderingCanvas(), true);
-        camera.setPosition(new Vector3(0, 3, 5))
-        // camera.setTarget(this.player.position);
-
         const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
         light.intensity = 0.25;
         scene.ambientColor = Color3.Blue()
 
-        const dlight = new DirectionalLight("directionalLight", new Vector3(-1, -2, -1), scene);
+        const dlight = new DirectionalLight("directionalLight", new Vector3(0, -10, 10), scene);
         dlight.intensity = 0.5;
 
         const shadowGenerator = new ShadowGenerator(1024, dlight);
@@ -56,6 +50,11 @@ export default class Game {
         const physicsPlugin = new CannonJSPlugin();
         scene.enablePhysics(gravityVector, physicsPlugin);
 
+        engine.enterPointerlock();
+        scene.onPointerDown = (e) => {
+            if (e.button === 1) { engine.exitPointerlock(); }
+        };
+
         return scene;
     }
 
@@ -63,17 +62,13 @@ export default class Game {
      * everything that will update during the game
     */
     initGame() {
-        this.player = new Player("player", new Vector3(0, 2, 0), this)
-        new CharacterInputController(this.player, this)
-
-        const camera = this.scene.activeCamera as ArcRotateCamera;
-
-        // Update the camera's target on every frame
-        this.scene.onBeforeRenderObservable.add(() => {
-            camera.setTarget(this.player.position)
-        });
-
         new Ground("ground", this)
+        this.player = new Player("player", new Vector3(0, 2, 0), this)
+
+        const camera = new ArcFollowCamera("camera", Math.PI, Math.PI / 4, 10, this.player, this.scene);
+        camera.computeWorldMatrix();
+
+        new CharacterInputController(this.player, this)
         Game.shadowGenerator.addShadowCaster(this.player)
 
         // this.scene.debugLayer.show()

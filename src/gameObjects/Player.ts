@@ -1,8 +1,7 @@
-import { CreateSphereVertexData, Effect, PhysicsImpostor, ShaderMaterial, Vector3 } from "@babylonjs/core";
+import { Color3, CreateSphereVertexData, PhysicsImpostor, StandardMaterial, Vector3 } from "@babylonjs/core";
 import { Character } from "./types";
 import type Game from "../Game";
 import GameObject from "./GameObject";
-import { jellyFragmentShader, jellyVertexShader } from "../shaders/jellyMaterial";
 
 export default class Player extends GameObject implements Character {
     name: string
@@ -15,24 +14,11 @@ export default class Player extends GameObject implements Character {
         vertexData.applyToMesh(this)
 
         this.position = position;
-        this.physicsImpostor = new PhysicsImpostor(this, PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0.5 }, this._scene);
+        this.physicsImpostor = new PhysicsImpostor(this, PhysicsImpostor.SphereImpostor, { mass: 1, friction: 10 }, this.getScene());
 
-
-        // Jelly Material
-        Effect.ShadersStore["jellyVertexShader"] = jellyVertexShader;
-        Effect.ShadersStore["jellyFragmentShader"] = jellyFragmentShader;
-        const jellyMaterial = new ShaderMaterial("jellyMaterial", game.scene, {
-            vertex: "jelly",
-            fragment: "jelly",
-        }, {
-            attributes: ["position", "normal", "uv"],
-            uniforms: ["worldViewProjection", "cameraPosition", "time", "moveDirection"],
-        });
-
-        jellyMaterial.setVector3("moveDirection", this.moveDirection);
-        jellyMaterial.setFloat("time", 0);
-        jellyMaterial.setVector3("diffuseColor", new Vector3(1, 0, 1));
-        this.material = jellyMaterial;
+        const mat = new StandardMaterial("playerMat", game.scene);
+        mat.diffuseColor = Color3.Blue();
+        this.material = mat;
     }
 
     interact() {
