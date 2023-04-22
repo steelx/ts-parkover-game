@@ -1,4 +1,4 @@
-import { ArcFollowCamera, CannonJSPlugin, Color3, DirectionalLight, Engine, HemisphericLight, Scene, ShadowGenerator, Vector3 } from "@babylonjs/core";
+import { ArcFollowCamera, Color3, DirectionalLight, Engine, HavokPlugin, HemisphericLight, Scene, ShadowGenerator, Vector3 } from "@babylonjs/core";
 import Player from "./gameObjects/Player";
 import Ground from "./gameObjects/Ground";
 import CharacterInputController from "./CharacterInputController";
@@ -47,7 +47,7 @@ export default class Game {
 
 
         const gravityVector = new Vector3(0, -9.81, 0);
-        const physicsPlugin = new CannonJSPlugin();
+        const physicsPlugin = new HavokPlugin();
         scene.enablePhysics(gravityVector, physicsPlugin);
 
         engine.enterPointerlock();

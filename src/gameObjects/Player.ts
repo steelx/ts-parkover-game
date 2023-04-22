@@ -1,4 +1,4 @@
-import { Color3, CreateSphereVertexData, PhysicsImpostor, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { Color3, CreateSphereVertexData, PhysicsAggregate, PhysicsShapeType, StandardMaterial, Vector3 } from "@babylonjs/core";
 import { Character } from "./types";
 import type Game from "../Game";
 import GameObject from "./GameObject";
@@ -6,6 +6,7 @@ import GameObject from "./GameObject";
 export default class Player extends GameObject implements Character {
     name: string
     moveDirection: Vector3 = Vector3.Zero();
+    aggregate: PhysicsAggregate;
 
     constructor(name: string, position: Vector3, game: Game) {
         super(name, game)
@@ -14,7 +15,7 @@ export default class Player extends GameObject implements Character {
         vertexData.applyToMesh(this)
 
         this.position = position;
-        this.physicsImpostor = new PhysicsImpostor(this, PhysicsImpostor.SphereImpostor, { mass: 1, friction: 10 }, this.getScene());
+        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.SPHERE, { mass: 1 }, this.getScene());
 
         const mat = new StandardMaterial("playerMat", game.scene);
         mat.diffuseColor = Color3.Blue();
