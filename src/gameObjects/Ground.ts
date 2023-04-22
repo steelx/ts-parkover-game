@@ -8,22 +8,21 @@ export default class Ground extends GameObject {
     constructor(name: string, game: Game) {
         super(name, game)
 
-        const vertexData = createUnevenGround(100, 100, 20)
+        const vertexData = createUnevenGround(20, 20, 10);
         vertexData.applyToMesh(this)
-
         this.flipFaces(true)
         this.position = Vector3.Zero();
 
         const heightmapData = this.getHeightmapData(vertexData);
-        this.physicsImpostor = new PhysicsImpostor(this, PhysicsImpostor.HeightmapImpostor, { mass: 0, restitution: 0.9, heightmapData }, game.scene);
-
+        this.physicsImpostor = new PhysicsImpostor(this, PhysicsImpostor.HeightmapImpostor, { mass: 0, restitution: 0.9, heightmapData, friction: 1 }, game.scene);
 
         const groundMaterial = new StandardMaterial("groundMaterial", game.scene);
         groundMaterial.diffuseColor = Color3.Green();
+        this.receiveShadows = true;
         this.material = groundMaterial;
     }
 
-    private getHeightmapData(vertexData: VertexData): number[][] {
+    getHeightmapData(vertexData: VertexData): number[][] {
         const positions = vertexData.positions as number[];
         const subdivisions = Math.sqrt(positions.length / 3) - 1;
         const heightmapData = [];
