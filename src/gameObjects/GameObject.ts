@@ -1,4 +1,4 @@
-import { Mesh, Scene } from "@babylonjs/core"
+import { Mesh } from "@babylonjs/core"
 import Game from "../Game"
 
 export default class GameObject extends Mesh {

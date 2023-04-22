@@ -23,7 +23,7 @@ export default class Ground extends GameObject {
     }
 
     getHeightmapData(vertexData: VertexData): number[][] {
-        const positions = vertexData.positions as number[];
+        const positions = vertexData.positions!;
         const subdivisions = Math.sqrt(positions.length / 3) - 1;
         const heightmapData = [];
 

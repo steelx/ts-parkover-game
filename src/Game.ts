@@ -1,11 +1,11 @@
-import { ArcFollowCamera, CannonJSPlugin, Color3, DirectionalLight, Engine, HemisphericLight, Quaternion, Scene, ShadowGenerator, Vector3 } from "@babylonjs/core";
+import { ArcFollowCamera, CannonJSPlugin, Color3, DirectionalLight, Engine, HemisphericLight, Scene, ShadowGenerator, Vector3 } from "@babylonjs/core";
 import Player from "./gameObjects/Player";
-
-import "@babylonjs/core/Debug/debugLayer";
-import "@babylonjs/inspector";
-import "@babylonjs/loaders/glTF";
 import Ground from "./gameObjects/Ground";
 import CharacterInputController from "./CharacterInputController";
+
+// import "@babylonjs/core/Debug/debugLayer";
+// import "@babylonjs/inspector";
+// import "@babylonjs/loaders/glTF";
 
 export default class Game {
     engine: Engine
