@@ -76,7 +76,7 @@ export default class Game {
         Game.shadowGenerator.addShadowCaster(this.player)
 
         // explosives
-
+        if (this.player === undefined) { return; }
 
         const lightningBolt = new LightningBolt(this);
         const strikeInterval = 2000; // Strike every 2000ms
@@ -89,8 +89,8 @@ export default class Game {
 
         setInterval(() => {
             lightningBolt.strikeRandomPosition(minX, maxX, minZ, maxZ, strikeDuration);
-            console.log("struck ? ", lightningBolt.struckPlayer(this.player));
-            new ExplosiveSphere(new Vector3(0, 2, -5), this, 2000)
+            console.log("struck ? ", lightningBolt.struckPlayer());
+            new ExplosiveSphere(new Vector3(Math.random() * 5, 5, Math.random() * 5), this, 2000)
 
         }, strikeInterval);
 

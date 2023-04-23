@@ -1,7 +1,6 @@
 import { StandardMaterial, Color3, CreateDashedLinesVertexData, Vector3, LinesMesh, Axis, Space } from "@babylonjs/core";
 import GameObject from "./GameObject";
 import Game from "../Game";
-import Player from "./Player";
 
 export default class LightningBolt extends GameObject {
     isVisible: boolean;

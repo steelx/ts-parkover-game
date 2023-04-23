@@ -22,10 +22,9 @@ export default class ExplosiveSphere extends GameObject {
         this.explosionParticleSystem = this.createExplosionParticleSystem();
 
         this.position = pos;
-        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.SPHERE, { mass: 1, friction: 1 }, this.getScene());
-        // Apply an impulse to roll the sphere towards player
-        const force = new Vector3(0, 0, 5);
-        this.aggregate.body.applyImpulse(force, game.player?.position, this.getAbsolutePosition());
+        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.SPHERE, { mass: 5, friction: 1, mesh: this }, this.getScene());
+
+        this.followPlayer(game.player!);
 
         // Set a timer for the sphere to explode
         setTimeout(() => {
@@ -33,12 +32,21 @@ export default class ExplosiveSphere extends GameObject {
         }, explosionTime);
     }
 
+    followPlayer(player: GameObject) {
+        const followSpeed = 30;
+
+        this.getScene().registerBeforeRender(() => {
+            if (!this.isDisposed() && this.aggregate.body) {
+                const direction = player.position.subtract(this.position).normalize();
+                const force = direction.scale(followSpeed);
+                this.aggregate.body.applyForce(force, this.aggregate.body.computeMassProperties().centerOfMass!);
+            }
+        });
+    }
+
     explode() {
         // Trigger the explosion particle system
         this.explosionParticleSystem.start();
-
-        // Disable the sphere after the explosion
-        // this.setEnabled(false);
 
         // Dispose the sphere after the explosion
         setTimeout(() => {
