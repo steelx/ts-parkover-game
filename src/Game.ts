@@ -2,6 +2,7 @@ import { ArcFollowCamera, Color3, DirectionalLight, Engine, HavokPlugin, Hemisph
 import Player from "./gameObjects/Player";
 import Ground from "./gameObjects/Ground";
 import CharacterInputController from "./CharacterInputController";
+import LightningBolt from "./gameObjects/LightningBolt";
 
 // import "@babylonjs/core/Debug/debugLayer";
 // import "@babylonjs/inspector";
@@ -65,11 +66,26 @@ export default class Game {
         new Ground("ground", this)
         this.player = new Player("player", new Vector3(0, 2, 0), this)
 
-        const camera = new ArcFollowCamera("camera", Math.PI, Math.PI / 4, 10, this.player, this.scene);
+        const camera = new ArcFollowCamera("camera", Math.PI, Math.PI / 5, 10, this.player, this.scene);
         camera.computeWorldMatrix();
 
         new CharacterInputController(this.player, this)
         Game.shadowGenerator.addShadowCaster(this.player)
+
+        const lightningBolt = new LightningBolt(this);
+        const strikeInterval = 2000; // Strike every 2000ms
+        const strikeDuration = 500; // Each strike lasts for 500ms
+
+        const minX = -4.5;
+        const maxX = 4.5;
+        const minZ = -4.5;
+        const maxZ = 4.5;
+
+        setInterval(() => {
+            lightningBolt.strikeRandomPosition(minX, maxX, minZ, maxZ, strikeDuration);
+            console.log("struck ? ", lightningBolt.struckPlayer(this.player));
+
+        }, strikeInterval);
 
         // this.scene.debugLayer.show()
     }

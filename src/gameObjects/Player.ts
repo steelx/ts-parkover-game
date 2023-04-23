@@ -5,6 +5,7 @@ import GameObject from "./GameObject";
 
 export default class Player extends GameObject implements Character {
     name: string
+    health: number = 100
     moveDirection: Vector3 = Vector3.Zero();
     aggregate: PhysicsAggregate;
 
@@ -18,7 +19,7 @@ export default class Player extends GameObject implements Character {
         this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.SPHERE, { mass: 1 }, this.getScene());
 
         const mat = new StandardMaterial("playerMat", game.scene);
-        mat.diffuseColor = Color3.Blue();
+        mat.diffuseColor = new Color3(0, 0, 1);
         this.material = mat;
     }
 

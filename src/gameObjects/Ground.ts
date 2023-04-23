@@ -19,7 +19,7 @@ export default class Ground extends GameObject {
         // this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.BOX, { mass: 0 }, game.scene);
 
         const groundMaterial = new StandardMaterial("groundMaterial", game.scene);
-        groundMaterial.diffuseColor = Color3.Green();
+        groundMaterial.diffuseColor = new Color3(0.5, 0.5, 0.5);
         this.receiveShadows = true;
         this.material = groundMaterial;
     }
