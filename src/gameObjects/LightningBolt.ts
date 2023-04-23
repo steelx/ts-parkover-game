@@ -49,7 +49,8 @@ export default class LightningBolt extends GameObject {
         }
     }
 
-    public struckPlayer(player: Player): boolean {
+    public struckPlayer(): boolean {
+        const player = this.game.player!;
         if (!this.isVisible || player.rotationQuaternion == null) {
             return false;
         }

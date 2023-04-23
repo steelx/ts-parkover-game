@@ -3,6 +3,7 @@ import Player from "./gameObjects/Player";
 import Ground from "./gameObjects/Ground";
 import CharacterInputController from "./CharacterInputController";
 import LightningBolt from "./gameObjects/LightningBolt";
+import ExplosiveSphere from "./gameObjects/ExplosiveSphere";
 
 // import "@babylonjs/core/Debug/debugLayer";
 // import "@babylonjs/inspector";
@@ -66,11 +67,16 @@ export default class Game {
         new Ground("ground", this)
         this.player = new Player("player", new Vector3(0, 2, 0), this)
 
-        const camera = new ArcFollowCamera("camera", Math.PI, Math.PI / 5, 10, this.player, this.scene);
+        // 140 degrees in radians
+        const angle = 150 * Math.PI / 180;
+        const camera = new ArcFollowCamera("camera", Math.PI, angle, 10, this.player, this.scene);
         camera.computeWorldMatrix();
 
         new CharacterInputController(this.player, this)
         Game.shadowGenerator.addShadowCaster(this.player)
+
+        // explosives
+
 
         const lightningBolt = new LightningBolt(this);
         const strikeInterval = 2000; // Strike every 2000ms
@@ -84,6 +90,7 @@ export default class Game {
         setInterval(() => {
             lightningBolt.strikeRandomPosition(minX, maxX, minZ, maxZ, strikeDuration);
             console.log("struck ? ", lightningBolt.struckPlayer(this.player));
+            new ExplosiveSphere(new Vector3(0, 2, -5), this, 2000)
 
         }, strikeInterval);
 
