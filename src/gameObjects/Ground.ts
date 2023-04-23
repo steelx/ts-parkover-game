@@ -1,13 +1,13 @@
 // src/gameObjects/Ground.ts
-import { Color3, PhysicsAggregate, PhysicsShapeType, StandardMaterial, Vector3, VertexData } from "@babylonjs/core";
+import { Color3, PhysicsAggregate, PhysicsShapeType, Ray, StandardMaterial, Vector3, VertexData } from "@babylonjs/core";
 import Game from "../Game";
 import { createUnevenGround } from "../meshes/unevenGround";
 import GameObject from "./GameObject"
 
 export default class Ground extends GameObject {
     aggregate: PhysicsAggregate;
-    constructor(name: string, game: Game) {
-        super(name, game)
+    constructor(game: Game) {
+        super("ground", game)
 
         const vertexData = createUnevenGround(30, 30, 10);
         vertexData.applyToMesh(this)
@@ -40,5 +40,16 @@ export default class Ground extends GameObject {
         }
 
         return heightmapData;
+    }
+
+    public getGroundHeight(position: Vector3): number {
+        const ray = new Ray(position.add(new Vector3(0, 100, 0)), new Vector3(0, -1, 0), 200);
+        const hit = this.getScene().pickWithRay(ray, (mesh) => mesh.name === "ground");
+
+        if (hit?.pickedPoint) {
+            return hit.pickedPoint.y;
+        } else {
+            return position.y;
+        }
     }
 }

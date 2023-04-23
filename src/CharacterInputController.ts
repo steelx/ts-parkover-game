@@ -66,7 +66,8 @@ export default class CharacterInputController {
 
             if (this.inputMap[" "]) { // Space key for strafe jump
                 const jumpImpulse = new Vector3(0, strafeJumpSpeed, 0);
-                this.applyForce(jumpImpulse)
+                const isOnGround = this.character.isOnGround()
+                if (isOnGround) this.applyForce(jumpImpulse);
                 this.inputMap[" "] = false;
             }
 

@@ -2,6 +2,7 @@ import { Color3, CreateSphereVertexData, PhysicsAggregate, PhysicsShapeType, Sta
 import { Character } from "./types";
 import type Game from "../Game";
 import GameObject from "./GameObject";
+import Ground from "./Ground";
 
 export default class Player extends GameObject implements Character {
     name: string
@@ -25,5 +26,12 @@ export default class Player extends GameObject implements Character {
 
     interact() {
         console.log("Interacting with the main character");
+    }
+
+    public isOnGround(): boolean {
+        const ground = this.getScene().getMeshByName("ground") as Ground;
+        const groundHeight = ground.getGroundHeight(this.position);
+        const threshold = 1; // Tolerance for small variations in height
+        return Math.abs(this.position.y - groundHeight) <= threshold;
     }
 }

@@ -38,7 +38,7 @@ export default class Game {
         scene.ambientColor = Color3.Blue()
 
         const dlight = new DirectionalLight("directionalLight", new Vector3(0, -10, 10), scene);
-        dlight.intensity = 0.5;
+        dlight.intensity = 0.7;
 
         const shadowGenerator = new ShadowGenerator(1024, dlight);
         shadowGenerator.useBlurExponentialShadowMap = true;
@@ -64,7 +64,7 @@ export default class Game {
      * everything that will update during the game
     */
     initGame() {
-        new Ground("ground", this)
+        new Ground(this)
         this.player = new Player("player", new Vector3(0, 2, 0), this)
 
         // 140 degrees in radians
@@ -82,16 +82,17 @@ export default class Game {
         const strikeInterval = 2000; // Strike every 2000ms
         const strikeDuration = 500; // Each strike lasts for 500ms
 
-        const minX = -4.5;
-        const maxX = 4.5;
-        const minZ = -4.5;
-        const maxZ = 4.5;
+        const minX = -9.5;
+        const maxX = 9.5;
+        const minZ = -9.5;
+        const maxZ = 9.5;
+
+
 
         setInterval(() => {
             lightningBolt.strikeRandomPosition(minX, maxX, minZ, maxZ, strikeDuration);
-            console.log("struck ? ", lightningBolt.struckPlayer());
-            new ExplosiveSphere(new Vector3(Math.random() * 5, 5, Math.random() * 5), this, 2000)
-
+            // console.log("struck ? ", lightningBolt.struckPlayer());
+            new ExplosiveSphere(new Vector3(Math.random() * 5, 2, Math.random() * -5), this, 2000)
         }, strikeInterval);
 
         // this.scene.debugLayer.show()

@@ -1,6 +1,7 @@
 import { MeshBuilder, StandardMaterial, Color3, SphereParticleEmitter, ParticleSystem, Texture, Vector3, PhysicsAggregate, PhysicsShapeType } from "@babylonjs/core";
 import Game from "../Game";
 import GameObject from "./GameObject";
+import Ground from "./Ground";
 
 export default class ExplosiveSphere extends GameObject {
     aggregate: PhysicsAggregate;
@@ -22,7 +23,7 @@ export default class ExplosiveSphere extends GameObject {
         this.explosionParticleSystem = this.createExplosionParticleSystem();
 
         this.position = pos;
-        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.SPHERE, { mass: 5, friction: 1, mesh: this }, this.getScene());
+        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.SPHERE, { mass: 10, friction: 0, mesh: this }, this.getScene());
 
         this.followPlayer(game.player!);
 
@@ -33,11 +34,17 @@ export default class ExplosiveSphere extends GameObject {
     }
 
     followPlayer(player: GameObject) {
-        const followSpeed = 30;
+        const followSpeed = 40;
+
 
         this.getScene().registerBeforeRender(() => {
             if (!this.isDisposed() && this.aggregate.body) {
-                const direction = player.position.subtract(this.position).normalize();
+                const ground = this.getScene().getMeshByName("ground") as Ground;
+                const groundHeight = ground.getGroundHeight(player.position);
+                const playerPositionWithGroundHeight = player.position.clone();
+                playerPositionWithGroundHeight.y = groundHeight;
+
+                const direction = playerPositionWithGroundHeight.subtract(this.position).normalize();
                 const force = direction.scale(followSpeed);
                 this.aggregate.body.applyForce(force, this.aggregate.body.computeMassProperties().centerOfMass!);
             }
