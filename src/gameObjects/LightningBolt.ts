@@ -1,36 +1,29 @@
-import { CreateDashedLinesVertexData, Vector3, LinesMesh, ShaderMaterial, Effect, Color3, CreateLines, MeshBuilder } from "@babylonjs/core";
+import { Vector3, LinesMesh, CreateLines, CreateTube, Mesh, StandardMaterial, Color3, Space, Axis } from "@babylonjs/core";
 import GameObject from "./GameObject";
 import Game from "../Game";
 
-// shaders
-import { lightningBoltVertexShader, lightningBoltFragmentShader } from '../shaders/lightingBolt.fx';
-
 export default class LightningBolt extends GameObject {
     isVisible: boolean;
-    lightningBolt: LinesMesh;
+    lightningBolt: Mesh;
+    lightningBolt0: LinesMesh;
 
     constructor(game: Game) {
         super("lightningBolt", game);
 
-        const points = LightningBolt.generateLightningPoints()
-
-        this.lightningBolt = CreateLines("lightningBolt", { points, updatable: true });
+        this.lightningBolt0 = this.createLineBolts();
+        this.lightningBolt = this.createLightningPoints();
         this.addChild(this.lightningBolt);
+        this.addChild(this.lightningBolt0);
 
         // materials
-        Effect.ShadersStore["lightningBoltVertexShader"] = lightningBoltVertexShader;
-        Effect.ShadersStore["lightningBoltFragmentShader"] = lightningBoltFragmentShader;
-        const boltMat = new ShaderMaterial("boltMat", this.getScene(), {
-            vertex: "lightningBolt",
-            fragment: "lightningBolt",
-        }, {
-            attributes: ["position"],
-            uniforms: ["worldViewProjection", "color"],
-        });
-
-        boltMat.setVector3("color", new Vector3(0, 0, 1));
-        boltMat.backFaceCulling = true;
+        const boltMat = new StandardMaterial("mat", this.getScene());
+        boltMat.emissiveColor = Color3.White();
+        boltMat.diffuseColor = Color3.Yellow();
         this.lightningBolt.material = boltMat;
+
+        const mat = new StandardMaterial("mat", this.getScene());
+        mat.emissiveColor = Color3.Yellow();
+        this.lightningBolt0.material = mat;
 
         this.position.y = 2;
         this.setEnabled(false);
@@ -42,7 +35,7 @@ export default class LightningBolt extends GameObject {
             const x = Math.random() * (maxX - minX) + minX;
             const z = Math.random() * (maxZ - minZ) + minZ;
 
-            this.position.set(x, 1.5, z);
+            this.position.set(x, 0.5, z);
             this.setEnabled(true);
             this.isVisible = true;
 
@@ -66,20 +59,20 @@ export default class LightningBolt extends GameObject {
         }
 
         // Rotate the player collision mesh temporarily to match the bolt's orientation.
-        // const originalRotation = player.rotationQuaternion.clone();
-        // player.rotate(Axis.X, Math.PI / 2, Space.LOCAL);
+        const originalRotation = player.rotationQuaternion.clone();
+        player.rotate(Axis.X, Math.PI / 2, Space.LOCAL);
 
-        const intersecting = this.lightningBolt.intersectsMesh(player, true);
+        const intersecting = this.lightningBolt.intersectsMesh(player);
 
         // Reset the player collision mesh rotation.
-        // player.rotationQuaternion.copyFrom(originalRotation);
+        player.rotationQuaternion.copyFrom(originalRotation);
 
         return intersecting;
     }
 
     static generateLightningPoints(): Vector3[] {
-        const numSegments = 5;
-        const yOffset = 4;
+        const numSegments = 7;
+        const yOffset = 6;
         const deviation = 0.5;
         const points: Vector3[] = [new Vector3(0, 0, 0)];
 
@@ -93,7 +86,21 @@ export default class LightningBolt extends GameObject {
     }
 
     public updateLightningPoints(): void {
+        this.createLightningPoints();
+        this.createLineBolts();
+    }
+    createLightningPoints(): Mesh {
+        const path = LightningBolt.generateLightningPoints();
+
+        return CreateTube("lightningBolt", {
+            path, updatable: true, instance: this.lightningBolt,
+            tessellation: 8, radius: 0.05,
+            sideOrientation: Mesh.FRONTSIDE,
+        });
+    }
+
+    createLineBolts() {
         const points = LightningBolt.generateLightningPoints();
-        this.lightningBolt = CreateLines("lightningBolt", { points, updatable: true, instance: this.lightningBolt });
+        return CreateLines("lightningBolt0", { points, updatable: true, instance: this.lightningBolt0 })
     }
 }

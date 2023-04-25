@@ -3,7 +3,7 @@ import Player from "./gameObjects/Player";
 import Ground from "./gameObjects/Ground";
 import CharacterInputController from "./CharacterInputController";
 import LightningBolt from "./gameObjects/LightningBolt";
-import ExplosiveSphere from "./gameObjects/ExplosiveSphere";
+import KamakaziPlane from "./gameObjects/KamakaziPlane";
 
 // import "@babylonjs/core/Debug/debugLayer";
 // import "@babylonjs/inspector";
@@ -87,12 +87,10 @@ export default class Game {
         const minZ = -9.5;
         const maxZ = 9.5;
 
-
-
         setInterval(() => {
             lightningBolt.strikeRandomPosition(minX, maxX, minZ, maxZ, strikeDuration);
-            // console.log("struck ? ", lightningBolt.struckPlayer());
-            new ExplosiveSphere(new Vector3(Math.random() * 5, 2, Math.random() * -5), this, 2000)
+            console.log("struck ? ", lightningBolt.struckPlayer());
+            new KamakaziPlane(new Vector3(Math.random() * 5, 2, Math.random() * -5), this, 2000)
         }, strikeInterval);
 
         // this.scene.debugLayer.show()

@@ -33,7 +33,7 @@
     "@fortawesome/free-regular-svg-icons" "^6.0.0"
     "@fortawesome/free-solid-svg-icons" "^6.0.0"
 
-"@babylonjs/loaders@~6":
+"@babylonjs/loaders@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@babylonjs/loaders/-/loaders-6.0.0.tgz#a4d72cab8640a30a10e005a101078348cb3ca521"
   integrity sha512-QXHW+/NnZ+asGGyZzlQyCRWCoM+iou/Btqh7WjTPnqPSz0aw3yE9lMqMm67B3iTmtD9XGuEkZ0fPoDDgsW1Z7Q==

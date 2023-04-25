@@ -6,10 +6,11 @@ import GameObject from "./GameObject"
 
 export default class Ground extends GameObject {
     aggregate: PhysicsAggregate;
+    static readonly SIZE = 30;
     constructor(game: Game) {
         super("ground", game)
 
-        const vertexData = createUnevenGround(30, 30, 10);
+        const vertexData = createUnevenGround(Ground.SIZE, Ground.SIZE, 10);
         vertexData.applyToMesh(this)
         this.flipFaces(true)
         this.position = Vector3.Zero();
@@ -43,7 +44,7 @@ export default class Ground extends GameObject {
     }
 
     public getGroundHeight(position: Vector3): number {
-        const ray = new Ray(position.add(new Vector3(0, 100, 0)), new Vector3(0, -1, 0), 200);
+        const ray = new Ray(position.add(new Vector3(0, 1000, 0)), new Vector3(0, -1, 0), 2000);
         const hit = this.getScene().pickWithRay(ray, (mesh) => mesh.name === "ground");
 
         if (hit?.pickedPoint) {
@@ -52,4 +53,20 @@ export default class Ground extends GameObject {
             return position.y;
         }
     }
+
+    public isPositionOutOfBounds(position: Vector3): boolean {
+        const halfSize = Ground.SIZE / 2; // Assuming the ground dimensions are 30x30
+        const minX = -halfSize;
+        const maxX = halfSize;
+        const minZ = -halfSize;
+        const maxZ = halfSize;
+
+        return (
+            position.x < minX ||
+            position.x > maxX ||
+            position.z < minZ ||
+            position.z > maxZ
+        );
+    }
+
 }

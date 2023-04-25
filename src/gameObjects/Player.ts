@@ -18,6 +18,9 @@ export default class Player extends GameObject implements Character {
 
         this.position = position;
         this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.SPHERE, { mass: 1 }, this.getScene());
+        // this.aggregate.body.setLinearDamping(2);
+        console.log('Player init');
+
 
         const mat = new StandardMaterial("playerMat", game.scene);
         mat.diffuseColor = new Color3(0, 0, 1);

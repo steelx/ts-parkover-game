@@ -18,7 +18,7 @@
     "@babylonjs/gui-editor": "~6",
     "@babylonjs/havok": "^1.0.0",
     "@babylonjs/inspector": "~6",
-    "@babylonjs/loaders": "~6",
+    "@babylonjs/loaders": "^6.0.0",
     "@babylonjs/materials": "~6",
     "@babylonjs/serializers": "~6"
   }
