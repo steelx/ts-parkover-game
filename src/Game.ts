@@ -3,7 +3,7 @@ import Player from "./gameObjects/Player";
 import Ground from "./gameObjects/Ground";
 import CharacterInputController from "./CharacterInputController";
 import LightningBolt from "./gameObjects/LightningBolt";
-import KamakaziPlane from "./gameObjects/KamakaziPlane";
+import KamakaziRocket from "./gameObjects/KamakaziRocket";
 
 // import "@babylonjs/core/Debug/debugLayer";
 // import "@babylonjs/inspector";
@@ -90,7 +90,7 @@ export default class Game {
         setInterval(() => {
             lightningBolt.strikeRandomPosition(minX, maxX, minZ, maxZ, strikeDuration);
             console.log("struck ? ", lightningBolt.struckPlayer());
-            new KamakaziPlane(new Vector3(Math.random() * 5, 2, Math.random() * -5), this, 2000)
+            new KamakaziRocket(new Vector3(Math.random() * 5, 2, Math.random() * -5), this, 2000)
         }, strikeInterval);
 
         // this.scene.debugLayer.show()

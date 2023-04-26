@@ -31,9 +31,6 @@ export default class KamakaziRocket extends GameObject {
         // Lock Y movement and Y rotation
         // this.aggregate.body.setAngularVelocity(new Vector3(0.5, 0.5, 0.5));
 
-        // i want to move mesh to the forwards using physics without it falling down
-        this.aggregate.body.setLinearVelocity(new Vector3(0, -1, 0));
-
         this.followPlayer(game.player!);
 
         // Set a timer for the plane to explode
@@ -65,6 +62,28 @@ export default class KamakaziRocket extends GameObject {
         const followSpeed = 20;
         const targetHeight = 2;
 
+        // remove gravity from Mesh body
+        this.aggregate.body.setLinearVelocity(new Vector3(0, -1, 0));
+
+        this.getScene().onBeforeRenderObservable.add(() => {
+            if (!this.isDisposed() && this.aggregate.body) {
+
+                // rotate the body to face the direction of the velocity
+                const velocity = new Vector3()
+                this.aggregate.body.getLinearVelocityToRef(velocity);
+                if (velocity.length() > 0.1) {
+                    // Create a quaternion representing a 90-degree pitch rotation
+                    const pitch = Math.PI / 2; // 90 degrees in radians
+                    const yaw = 0;
+                    const roll = 0;
+                    const rotationQuaternion = Quaternion.RotationYawPitchRoll(yaw, pitch, roll);
+
+                    // Assign the quaternion to the cylinder's rotationQuaternion property
+                    this.rotationQuaternion = rotationQuaternion;
+                }
+            }
+        });
+
         this.getScene().registerBeforeRender(() => {
             if (!this.isDisposed() && this.aggregate.body) {
                 const ground = this.getScene().getMeshByName("ground") as Ground;
@@ -78,17 +97,19 @@ export default class KamakaziRocket extends GameObject {
                 const force = direction.scale(followSpeed);
                 this.aggregate.body.applyForce(force, this.aggregate.body.computeMassProperties().centerOfMass!);
 
-                // Align plane with the direction of the forcew
-                const forward = Vector3.Forward(); // Forward direction
+                // Align plane with the direction of the force
+                const forward = new Vector3(0, 0, 1); // Forward direction
                 const directionFlat = new Vector3(direction.x, 0, direction.z); // Direction projected on XZ plane
 
                 // Calculate rotation quaternion between forward direction and the projected direction
                 const angleBetween = Math.acos(Vector3.Dot(forward, directionFlat.normalize()));
-                const rotationAxis = Vector3.Cross(forward, directionFlat);
-                this.rotationQuaternion = Quaternion.RotationAxis(rotationAxis, angleBetween);
+                const rotationAxis = Vector3.Cross(forward, directionFlat).normalize();
+                const q = Quaternion.RotationAxis(rotationAxis, angleBetween);
+                this.rotationQuaternion = Quaternion.Slerp(this.rotationQuaternion!, q, 0.1); // Smooth rotation
             }
         });
     }
+
 
 
 
