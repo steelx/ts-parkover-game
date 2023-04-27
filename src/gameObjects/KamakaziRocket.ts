@@ -26,7 +26,7 @@ export default class KamakaziRocket extends GameObject {
         this.explosionParticleSystem = this.createExplosionParticleSystem();
 
         this.position = pos;
-        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.MESH, { mass: 2, friction: 0, mesh: this }, this.getScene());
+        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.CAPSULE, { mass: 2, friction: 0, mesh: this }, this.getScene());
 
         // Lock Y movement and Y rotation
         // this.aggregate.body.setAngularVelocity(new Vector3(0.5, 0.5, 0.5));
