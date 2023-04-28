@@ -1,7 +1,7 @@
 import {
     StandardMaterial, Color3, SphereParticleEmitter, ParticleSystem,
     Texture, Vector3, Quaternion,
-    Animation, CreateCapsuleVertexData, ActionManager, ExecuteCodeAction, CircleEase, Matrix
+    Animation, ActionManager, ExecuteCodeAction, CircleEase, Matrix, CreateBoxVertexData
 } from "@babylonjs/core";
 import Game from "../Game";
 import GameObject from "./GameObject";
@@ -16,11 +16,11 @@ export default class HomingMissile extends GameObject {
         super("homingMissile", game);
 
         // Create a mesh
-        const vertexData = CreateCapsuleVertexData({ radius: 0.1, capSubdivisions: 1, height: 1, tessellation: 4, topCapSubdivisions: 8 });
+        const vertexData = CreateBoxVertexData({ width: 0.1, size: 0.1, height: 1 });
         vertexData.applyToMesh(this, true);
 
         // Set plane material
-        const mat = new StandardMaterial("capsuleMaterial", this.getScene());
+        const mat = new StandardMaterial("missileMaterial", this.getScene());
         mat.diffuseColor = Color3.Red();
         this.material = mat;
         Game.shadowGenerator.addShadowCaster(this);
@@ -101,7 +101,7 @@ export default class HomingMissile extends GameObject {
         const groundHeight = ground.getGroundHeight(playerPosition);
 
         // Move the pivot point to the base of the cylinder
-        const pivotMatrix = Matrix.Translation(0, -1, 0);
+        const pivotMatrix = Matrix.Translation(0, 0, 0);
         this.setPivotMatrix(pivotMatrix);
 
         // Create a quaternion representing a 90-degree pitch rotation
@@ -116,7 +116,7 @@ export default class HomingMissile extends GameObject {
         // Define animation for position
         const positionAnimation = new Animation("positionAnimation", "position", 100, Animation.ANIMATIONTYPE_VECTOR3, Animation.ANIMATIONLOOPMODE_CONSTANT);
         const [a, b, c] = this.getMissilePath(playerPosition)
-        const Y = playerPosition.y + groundHeight;
+        const Y = groundHeight;
         const Z = 0;
         this.lookAt(playerPosition);
         // Define position keyframes
