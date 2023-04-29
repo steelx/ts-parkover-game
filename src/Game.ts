@@ -91,7 +91,10 @@ export default class Game {
 
         setInterval(() => {
             lightningBolt.strikeRandomPosition(minX, maxX, minZ, maxZ, strikeDuration);
-            // console.log("struck ? ", lightningBolt.struckPlayer());
+            if (lightningBolt.struckPlayer()) {
+                console.log("Player was struck by lightning!");
+                this.characterInputController?.slowDownCharacter();
+            }
             new HomingMissile(new Vector3(-10, 2, 0), this, 3000)
             new KamakaziRocket(new Vector3(Math.random() * 5, 1, Math.random() * -5), this, 5000)
         }, strikeInterval);

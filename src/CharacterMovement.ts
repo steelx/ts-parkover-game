@@ -3,12 +3,18 @@ import GameObject from "./gameObjects/GameObject";
 
 export default class CharacterMovement {
     private gravity: number = -9.81;
+    timeMoving: number = 0;
+    accelerateToMaxSpeedInSeconds: number = 3;
 
-    constructor(private character: GameObject, private scene: Scene) { }
+    constructor(private character: GameObject, public maxSpeed: number, public speed: number, private scene: Scene) { }
 
-    move(direction: Vector3) {
-        this.character.position.addInPlace(direction);
+    move(direction: Vector3, elapsedTimeInSeconds: number) {
+        const acceleration = (this.maxSpeed - this.speed) / this.accelerateToMaxSpeedInSeconds;
+        const currentSpeed = Math.min(this.speed + this.timeMoving * acceleration, this.maxSpeed);
+        const scaledDirection = direction.scale(currentSpeed * elapsedTimeInSeconds);
+        this.character.position.addInPlace(scaledDirection);
     }
+
 
     jump(jumpImpulse: Vector3) {
         const [isOnGround] = this.getIsOnGround();
@@ -45,7 +51,7 @@ export default class CharacterMovement {
         const [isOnGround, hitDistance] = this.getIsOnGround();
 
         if (isOnGround) {
-            const halfPlayerHeight = 0.5;
+            const halfPlayerHeight = 1;
             const distanceToGround = hitDistance - halfPlayerHeight;
 
             // If the distance to the ground is positive, move the character down

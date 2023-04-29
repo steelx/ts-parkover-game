@@ -1,12 +1,12 @@
-import { Color3, CreateSphereVertexData, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { Color3, CreateCapsuleVertexData, StandardMaterial, Vector3 } from "@babylonjs/core";
 import { Character } from "./types";
 import type Game from "../Game";
 import GameObject from "./GameObject";
 import Ground from "./Ground";
 
 export default class Player extends GameObject implements Character {
-    public readonly speed = 0.01;
-    public readonly maxSpeed = 0.1;
+    public readonly speed = 15;
+    public readonly maxSpeed = 50;
     name: string
     health: number = 100
     moveDirection: Vector3 = Vector3.Zero();
@@ -14,7 +14,7 @@ export default class Player extends GameObject implements Character {
     constructor(name: string, position: Vector3, game: Game) {
         super(name, game)
         this.name = name;
-        const vertexData = CreateSphereVertexData({ diameter: 1, segments: 4 })
+        const vertexData = CreateCapsuleVertexData({ radius: 0.5, subdivisions: 8, tessellation: 8, height: 1.5 });
         vertexData.applyToMesh(this)
 
         this.position = position;
