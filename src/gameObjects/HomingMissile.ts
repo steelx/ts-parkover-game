@@ -49,8 +49,6 @@ export default class HomingMissile extends GameObject {
                     parameter: game.player,
                 },
                 () => {
-                    console.log('its a hit!');
-
                     this._collisionTriggered = true;
                     window.clearTimeout(this._timer);
                     this.explode();

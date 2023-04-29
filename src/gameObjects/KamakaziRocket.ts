@@ -1,4 +1,4 @@
-import { StandardMaterial, Color3, SphereParticleEmitter, ParticleSystem, Texture, Vector3, PhysicsAggregate, PhysicsShapeType, Quaternion, MeshBuilder, PhysicsMotionType, CreateCapsuleVertexData, ActionManager, ExecuteCodeAction, Matrix, BoxParticleEmitter, Particle } from "@babylonjs/core";
+import { StandardMaterial, Color3, SphereParticleEmitter, ParticleSystem, Texture, Vector3, PhysicsAggregate, PhysicsShapeType, Quaternion, CreateCapsuleVertexData, ActionManager, ExecuteCodeAction, Matrix, BoxParticleEmitter, Particle } from "@babylonjs/core";
 import Game from "../Game";
 import GameObject from "./GameObject";
 import Ground from "./Ground";
@@ -49,8 +49,6 @@ export default class KamakaziRocket extends GameObject {
                     parameter: game.player!,
                 },
                 () => {
-                    console.log('Kaboom!');
-
                     this._collisionTriggered = true;
                     clearTimeout(this._timer);
                     this.explode();
