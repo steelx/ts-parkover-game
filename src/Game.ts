@@ -4,16 +4,17 @@ import Ground from "./gameObjects/Ground";
 import CharacterInputController from "./CharacterInputController";
 import LightningBolt from "./gameObjects/LightningBolt";
 import KamakaziRocket from "./gameObjects/KamakaziRocket";
+import HomingMissile from "./gameObjects/HomingMissile";
 
-// import "@babylonjs/core/Debug/debugLayer";
-// import "@babylonjs/inspector";
-// import "@babylonjs/loaders/glTF";
+import "@babylonjs/core/Debug/debugLayer";
+import "@babylonjs/inspector";
 
 export default class Game {
-    engine: Engine
-    scene: Scene
-    player: Player | null = null
     static shadowGenerator: ShadowGenerator;
+    engine: Engine;
+    scene: Scene;
+    player: Player | null = null;
+    characterInputController: CharacterInputController | null = null;
 
     constructor(private canvas: HTMLCanvasElement) {
         this.engine = new Engine(this.canvas, true)
@@ -52,8 +53,8 @@ export default class Game {
         const physicsPlugin = new HavokPlugin();
         scene.enablePhysics(gravityVector, physicsPlugin);
 
-        engine.enterPointerlock();
         scene.onPointerDown = (e) => {
+            if (e.button === 0) { engine.enterPointerlock(); }
             if (e.button === 1) { engine.exitPointerlock(); }
         };
 
@@ -72,25 +73,27 @@ export default class Game {
         const camera = new ArcFollowCamera("camera", Math.PI, angle, 10, this.player, this.scene);
         camera.computeWorldMatrix();
 
-        new CharacterInputController(this.player, this)
+        this.characterInputController = new CharacterInputController(this.player, this)
         Game.shadowGenerator.addShadowCaster(this.player)
 
         // explosives
         if (this.player === undefined) { return; }
 
         const lightningBolt = new LightningBolt(this);
-        const strikeInterval = 2000; // Strike every 2000ms
+        const strikeInterval = 5000; // Strike every 2000ms
         const strikeDuration = 500; // Each strike lasts for 500ms
 
         const minX = -9.5;
         const maxX = 9.5;
         const minZ = -9.5;
         const maxZ = 9.5;
+        // new KamakaziRocket(new Vector3(Math.random() * 5, 1, Math.random() * -5), this, 5000)
 
         setInterval(() => {
             lightningBolt.strikeRandomPosition(minX, maxX, minZ, maxZ, strikeDuration);
             console.log("struck ? ", lightningBolt.struckPlayer());
-            new KamakaziRocket(new Vector3(Math.random() * 5, 2, Math.random() * -5), this, 2000)
+            new HomingMissile(new Vector3(-10, 2, 0), this, 3000)
+            new KamakaziRocket(new Vector3(Math.random() * 5, 1, Math.random() * -5), this, 5000)
         }, strikeInterval);
 
         // this.scene.debugLayer.show()
