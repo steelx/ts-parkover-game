@@ -5,7 +5,7 @@ import GameObject from "./GameObject";
 import Ground from "./Ground";
 
 export default class Player extends GameObject implements Character {
-    public readonly speed = 0.025;
+    public readonly speed = 0.5;
     public readonly maxSpeed = 1;
     name: string
     health: number = 100
