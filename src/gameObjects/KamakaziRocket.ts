@@ -49,8 +49,6 @@ export default class KamakaziRocket extends GameObject {
                     parameter: game.player!,
                 },
                 () => {
-                    console.log('Kaboom!');
-
                     this._collisionTriggered = true;
                     clearTimeout(this._timer);
                     this.explode();
