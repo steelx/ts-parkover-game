@@ -5,8 +5,8 @@ import GameObject from "./GameObject";
 import Ground from "./Ground";
 
 export default class Player extends GameObject implements Character {
-    public readonly speed = 0.1;
-    public readonly maxSpeed = 1;
+    public readonly speed = 0.01;
+    public readonly maxSpeed = 0.1;
     name: string
     health: number = 100
     moveDirection: Vector3 = Vector3.Zero();

@@ -1,6 +1,5 @@
 import { Scene, Vector3, Ray, AbstractMesh } from "@babylonjs/core";
 import GameObject from "./gameObjects/GameObject";
-import Ground from "./gameObjects/Ground";
 
 export default class CharacterMovement {
     private gravity: number = -9.81;
@@ -39,26 +38,19 @@ export default class CharacterMovement {
 
     getGravityOffset(deltaTime: number): number {
         const [isOnGround] = this.getIsOnGround();
-        if (!isOnGround) {
-            return this.gravity * deltaTime;
-        } else {
-            return 0;
-        }
+        return !isOnGround ? this.gravity * deltaTime : 0;
     }
 
     handleGroundCollision(gravityOffset: number) {
         const [isOnGround, hitDistance] = this.getIsOnGround();
 
         if (isOnGround) {
-            const distanceToGround = hitDistance - 1; // Subtract 1 since that's the length of the ray
+            const halfPlayerHeight = 0.5;
+            const distanceToGround = hitDistance - halfPlayerHeight;
 
-            if (distanceToGround > 0.1) {
-                // If the distance to the ground is more than 0.1, move the character down
-                this.character.position.y -= distanceToGround;
-            } else if (distanceToGround < -0.1) {
-                // If the distance to the ground is less than -0.1, move the character up
-                this.character.position.y += Math.abs(distanceToGround);
-            }
+            // If the distance to the ground is positive, move the character down
+            // If the distance to the ground is negative, move the character up
+            this.character.position.y -= distanceToGround;
         } else {
             this.character.position.y += gravityOffset;
         }
