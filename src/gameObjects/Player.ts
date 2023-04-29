@@ -1,10 +1,12 @@
-import { Color3, CreateSphereVertexData, PhysicsAggregate, PhysicsShapeType, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { Color3, CreateIcoSphereVertexData, CreateSphereVertexData, PhysicsAggregate, PhysicsShapeType, StandardMaterial, Vector3 } from "@babylonjs/core";
 import { Character } from "./types";
 import type Game from "../Game";
 import GameObject from "./GameObject";
 import Ground from "./Ground";
 
 export default class Player extends GameObject implements Character {
+    public readonly speed = 0.025;
+    public readonly maxSpeed = 1;
     name: string
     health: number = 100
     moveDirection: Vector3 = Vector3.Zero();
@@ -13,12 +15,11 @@ export default class Player extends GameObject implements Character {
     constructor(name: string, position: Vector3, game: Game) {
         super(name, game)
         this.name = name;
-        const vertexData = CreateSphereVertexData({ diameter: 1, segments: 32 })
+        const vertexData = CreateSphereVertexData({ diameter: 1, segments: 4 })
         vertexData.applyToMesh(this)
 
         this.position = position;
-        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.SPHERE, { mass: 1 }, this.getScene());
-        this.initPhysics();
+        this.aggregate = new PhysicsAggregate(this, PhysicsShapeType.SPHERE, { mass: 1, friction: 0.8, mesh: this }, this.getScene());
 
         const mat = new StandardMaterial("playerMat", game.scene);
         mat.diffuseColor = new Color3(0, 0, 1);
@@ -36,19 +37,8 @@ export default class Player extends GameObject implements Character {
         return Math.abs(this.position.y - groundHeight) <= threshold;
     }
 
-    private initPhysics() {
-        this.getScene().onBeforeRenderObservable.add(this.handleVelocity.bind(this));
-    }
-
-    private handleVelocity() {
-        if (!this.isDisposed && this.aggregate.body) {
-            this.aggregate.body.setAngularVelocity(Vector3.Zero());
-            this.aggregate.body.setLinearVelocity(new Vector3(1, 0.5, 1));
-        }
-    }
-
     _dispose(): void {
-        this.getScene().onBeforeRenderObservable.removeCallback(this.handleVelocity);
+        // this.getScene().onBeforeRenderObservable.removeCallback(this.handleVelocity);
         this.dispose();
     }
 }
